@@ -10,6 +10,7 @@ dist: bionic
 
 branches:
   - dev
+  - travis-test
 
 env:
   global:
