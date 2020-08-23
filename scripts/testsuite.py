@@ -39,16 +39,16 @@ class TestException(Exception):
         self.received = received
     
     def __str__(self):
-        return "* failed: {test}\n- expected: {exp}\n- received: {recv}".format(test=" ".join(self.command), exp=self.expected, recv=self.received)
+        return "* failed: {test}\n- expected: {exp}\n- received: {recv}".format(test=" ".join(self.command), exp=str(self.expected), recv=self.received)
 
 
 def matches(expected, received, regex=False):
     """ Return True or False depending on whether expected printed output matches. 
     """
     if regex:
-        return re.match(expected, received.decode("utf-8").strip()) != None
+        return re.match(expected, received) != None
     else:
-        return stdout.str() == proc.stdout.decode("utf-8").strip()
+        return expected == received
 
 
 def run_test(command, returncode, stdout, stderr, timeout, options):
@@ -57,14 +57,22 @@ def run_test(command, returncode, stdout, stderr, timeout, options):
     
     proc = subprocess.run(command, timeout=timeout, capture_output=True)
     
+    # normalize data for matching
+    if stdout: stdout = stdout.strip()
+    if stderr: stderr = stdout.strip()
+    
+    recv_stdout = proc.stdout.decode('utf-8').strip()
+    recv_stderr = proc.stdout.decode('utf-8').strip()
+    
+    # 
     if returncode and proc.returncode != returncode:
         raise TestException(command, returncode, proc.returncode)
     
-    if stdout and not matches(stdout, proc.stdout, options['regex']):
-        raise TestException(command, stdout.str(), proc.stdout.strip())
+    if stdout and not matches(stdout, recv_stdout, options.get('regex', False)):
+        raise TestException(command, stdout.strip(), recv_stdout)
     
-    if stderr and not matches(stderr, proc.stderr, options['regex']):
-        raise TestException(command, stderr.strip(), proc.stderr.strip())
+    if stderr and not matches(stderr, recv_stderr, options.get('regex', False)):
+        raise TestException(command, stderr.strip(), recv_stderr)
 
 
 # defines for terminal colors
@@ -78,7 +86,7 @@ class termcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
+# run tests and count failures
 num = len(tests)
 run = 0
 failed = 0
@@ -90,9 +98,6 @@ for test in tests:
     except TestException as e:
         failed +=1 
         print(termcolors.RED + str(e) + termcolors.END)
-    except Exception as e:
-        failed +=1 
-        print(str(e))
     run += 1
 
 if failed > 0:
@@ -101,3 +106,10 @@ else:
     final_color = termcolors.GREEN+termcolors.BOLD
 
 print((final_color+"{num} tests, {passed} passed / {failed} failed"+termcolors.END).format(num=num, passed=(num-failed), failed=failed))
+
+if failed > 0:
+    exit_code = -1
+else:
+    exit_code = 0
+
+sys.exit(exit_code)
