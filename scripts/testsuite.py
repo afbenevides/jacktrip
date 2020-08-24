@@ -17,7 +17,7 @@ import re
 
 tests = [    
     # version test
-    (["jacktrip", "-v"], 
+    (["./src/jacktrip", "-v"], 
         0,    # return code
         r"^JackTrip VERSION: 1\.2.*", # stdout
         None, # stderr
