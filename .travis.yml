@@ -33,9 +33,11 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export PATH="/usr/local/opt/qt/bin:$PATH"; fi
 
 script: 
+  # build executable
   - pushd src
   - ./build
   - popd
+  # run tests
   - ./scripts/testsuite.py
   
 after_success:
