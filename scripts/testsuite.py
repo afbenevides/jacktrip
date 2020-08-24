@@ -3,6 +3,7 @@
 import subprocess
 import sys
 import re
+import os
 
 # list of test commands and expected results.
 # Each test should be a tuple with the following format:
@@ -15,9 +16,11 @@ import re
 
 # test command, expected return code, expected stdout, expected stderr, timeout, additional options
 
+jacktrip_exe = os.path.abspath(os.path.join('builddir', 'jacktrip'))
+
 tests = [    
     # version test
-    (["./src/jacktrip", "-v"], 
+    ([jacktrip_exe, "-v"],
         0,    # return code
         r"^JackTrip VERSION: 1\.2.*", # stdout
         None, # stderr
