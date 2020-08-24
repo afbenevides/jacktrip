@@ -55,24 +55,26 @@ def run_test(command, returncode, stdout, stderr, timeout, options):
     """ Test the provided command against expected result.
     """
     
-    proc = subprocess.run(command, timeout=timeout, capture_output=True)
+    proc = subprocess.run(command, timeout=timeout,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        universal_newlines=True)
     
     # normalize data for matching
     if stdout: stdout = stdout.strip()
-    if stderr: stderr = stdout.strip()
+    if stderr: stderr = stderr.strip()
     
-    recv_stdout = proc.stdout.decode('utf-8').strip()
-    recv_stderr = proc.stdout.decode('utf-8').strip()
+    recv_stdout = proc.stdout.strip()
+    recv_stderr = proc.stderr.strip()
     
     # 
     if returncode and proc.returncode != returncode:
         raise TestException(command, returncode, proc.returncode)
     
     if stdout and not matches(stdout, recv_stdout, options.get('regex', False)):
-        raise TestException(command, stdout.strip(), recv_stdout)
+        raise TestException(command, stdout, recv_stdout)
     
     if stderr and not matches(stderr, recv_stderr, options.get('regex', False)):
-        raise TestException(command, stderr.strip(), recv_stderr)
+        raise TestException(command, stderr, recv_stderr)
 
 
 # defines for terminal colors
