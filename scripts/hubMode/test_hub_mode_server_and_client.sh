@@ -33,6 +33,9 @@
 # jacktrip: no process found
 # -1
 
+# go to directory of this script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+pushd "$DIR"
 
 JACKTRIP=$1
 
