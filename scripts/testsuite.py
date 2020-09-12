@@ -26,6 +26,13 @@ tests = [
         None, # stderr
         1,    # timeout
         { 'regex': True }), # options
+    # version test
+    (['scripts/hubMode/test_hub_mode_server_and_client.sh', jacktrip_exe, "32"],
+        0,    # return code
+        None, # stdout
+        None, # stderr
+        60,   # timeout
+        { 'regex': True }), # options
 ]
 
 
@@ -69,8 +76,11 @@ def run_test(command, returncode, stdout, stderr, timeout, options):
     recv_stdout = proc.stdout.strip()
     recv_stderr = proc.stderr.strip()
     
+    print(recv_stderr)
+    print(recv_stdout)
+    
     # 
-    if returncode and proc.returncode != returncode:
+    if returncode is not None and proc.returncode != returncode:
         raise TestException(command, returncode, proc.returncode)
     
     if stdout and not matches(stdout, recv_stdout, options.get('regex', False)):
