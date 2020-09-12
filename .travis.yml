@@ -9,6 +9,7 @@ language:
 dist: bionic
 
 branches:
+  - main
   - dev
   - travis-test
 
