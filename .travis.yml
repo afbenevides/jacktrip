@@ -23,9 +23,9 @@ addons:
     packages:
       - qt5-default
       - qttools5-dev-tools
-      - libjack-dev 
+      - libjack-jackd2-dev 
       - librtaudio-dev
-      - jackd
+      - jackd2
 
 before_script:
   # manually install brew packages as addon: homebrew is broken in the default osx image
