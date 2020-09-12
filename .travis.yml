@@ -39,7 +39,7 @@ script:
   - ./build
   - popd
   # run tests
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then ./scripts/testsuite.py fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then ./scripts/testsuite.py; fi
   
 after_success:
   - echo "Success!"
